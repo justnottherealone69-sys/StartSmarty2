@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StartSmart Elite</title>
+
+<!-- Chart.js CDN for graphs -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+/* --- Basic Styles --- */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #000814, #001d3d);
+    color: #e6f1ff;
+    line-height: 1.7;
+    transition: background 0.5s ease;
+}
+
+header {
+    text-align: center;
+    padding: 80px 20px;
+    background: #000000;
+    border-bottom: 2px solid #00b4ff;
+}
+
+header h1 {
+    font-size: 3em;
+    color: #00b4ff;
+    text-shadow: 0 0 20px #00b4ff;
+}
+
+header p {
+    font-size: 1.2em;
+    color: #c0e0ff;
+}
+
+section {
+    padding: 60px 10%;
+}
+
+h2 {
+    color: #00b4ff;
+    margin-bottom: 20px;
+}
+
+.card {
+    background: #111827;
+    padding: 30px;
+    margin: 30px 0;
+    border-radius: 10px;
+    border: 1px solid #00b4ff;
+    box-shadow: 0 0 15px rgba(0,180,255,0.3);
+    transition: transform 0.3s ease;
+    position: relative;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Tooltip */
+.tooltip {
+    position: relative;
+    cursor: pointer;
+}
+
+.tooltip .tiptext {
+    visibility: hidden;
+    width: 180px;
+    background-color: #00b4ff;
+    color: black;
+    text-align: center;
+    border-radius: 5px;
+    padding: 8px;
+    position: absolute;
+    z-index: 10;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -90px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip:hover .tiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+button {
+    background: #00b4ff;
+    color: black;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background: white;
+    color: #00b4ff;
+}
+
+input, select, textarea {
+    padding: 8px;
+    margin: 5px;
+    border-radius: 5px;
+    border: none;
+    width: calc(50% - 12px);
+}
+
+textarea {
+    width: 100%;
+    height: 120px;
+}
+
+footer {
+    text-align: center;
+    padding: 40px;
+    background: black;
+    border-top: 2px solid #00b4ff;
+}
+
+/* Glitch animation */
+@keyframes glitch {
+    0% { transform: translate(1px, -1px); }
+    25% { transform: translate(-1px, 1px); }
+    50% { transform: translate(1px, 1px); }
+    75% { transform: translate(-1px, -1px); }
+    100% { transform: translate(0px, 0px); }
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background: rgba(0,0,0,0.85);
+}
+
+.modal-content {
+    background: #111827;
+    margin: auto;
+    padding: 30px;
+    border: 2px solid #00b4ff;
+    width: 80%;
+    border-radius: 10px;
+}
+
+.close {
+    color: #00b4ff;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.close:hover {
+    color: white;
+}
+
+/* Slide-in tips panel */
+.tip-panel {
+    position: fixed;
+    right: -300px;
+    top: 80px;
+    width: 300px;
+    height: calc(100% - 100px);
+    background: #111827;
+    border-left: 2px solid #00b4ff;
+    padding: 20px;
+    transition: right 0.4s ease;
+    overflow-y: auto;
+    z-index: 900;
+}
+
+.tip-panel h3 {
+    color: #00b4ff;
+    margin-bottom: 15px;
+}
+
+.tip-panel.open {
+    right: 0;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>StartSmart Elite</h1>
+<p>The Complete Cyber Blueprint for Launching & Scaling a Profitable Business</p>
+</header>
+
+<section>
+<h2>🚀 Revenue Calculator</h2>
+<div class="card">
+<input type="number" id="price" placeholder="Price per product">
+<input type="number" id="customers" placeholder="Customers per month">
+<button onclick="revenueCalc()" class="tooltip">Calculate Revenue
+  <span class="tiptext">Click to see projected monthly revenue</span>
+</button>
+<p id="revenueOutput"></p>
+<canvas id="revenueChart" style="margin-top:20px;"></canvas>
+</div>
+</section>
+
+<section>
+<h2>📈 About StartSmart Elite</h2>
+<div class="card">
+<p>StartSmart Elite is designed to give entrepreneurs a step-by-step blueprint to launch and scale profitable businesses. Whether you're just starting out or optimizing operations, our system covers everything from market analysis to sales funnels and automation.</p>
+
+<p>With our data-driven approach, you'll maximize revenue, reduce unnecessary costs, and scale faster than traditional methods.</p>
+
+<button onclick="showModal('modal1')">Learn More</button>
+</div>
+</section>
+
+<section>
+<h2>💡 Why Choose Us?</h2>
+<div class="card">
+<ul>
+<li>Proven business strategies backed by data.</li>
+<li>Actionable insights and ready-to-implement templates.</li>
+<li>Exclusive access to webinars and community support.</li>
+<li>Interactive tools like calculators, checklists, and more.</li>
+</ul>
+<button onclick="showModal('modal2')">See Testimonials</button>
+<button onclick="toggleTips()">Show Business Tips</button>
+</div>
+</section>
+
+<section style="text-align:center; padding:80px 10%;">
+<h2 style="opacity:0.4;">System Diagnostics</h2>
+<p style="opacity:0.3;">Run advanced scan...</p>
+
+<button onclick="activateTV()" style="background:#111; color:#00b4ff; border:1px solid #00b4ff;">
+Run System Scan
+</button>
+
+<div id="tvSecret" style="display:none; margin-top:40px;">
+<img src="tenna.gif" style="width:300px; image-rendering:pixelated;">
+<h2 style="color:#00b4ff; text-shadow:0 0 15px #00b4ff;">
+IT'S TV TIME!!!
+</h2>
+</div>
+
+<audio id="tvMusic">
+<source src="tvtime.mp3" type="audio/mpeg">
+</audio>
+</section>
+
+<section>
+<h2>❓ FAQ</h2>
+<div class="card">
+<p><strong>Q:</strong> Can I use StartSmart Elite if I’m new to business?</p>
+<p><strong>A:</strong> Yes! Our system guides beginners step-by-step.</p>
+
+<p><strong>Q:</strong> Do you offer community support?</p>
+<p><strong>A:</strong> Yes, with exclusive forums and live Q&A sessions.</p>
+
+<p><strong>Q:</strong> Are there hidden costs?</p>
+<p><strong>A:</strong> No, everything is transparent.</p>
+</div>
+</section>
+
+<footer>
+<p>© 2026 StartSmart Elite</p>
+</footer>
+
+<!-- Modals -->
+<div id="modal1" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('modal1')">&times;</span>
+    <h2>About StartSmart Elite</h2>
+    <p>Get practical tools, templates, and frameworks to immediately improve your business. Focused on real-world results and measurable outcomes.</p>
+  </div>
+</div>
+
+<div id="modal2" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('modal2')">&times;</span>
+    <h2>Testimonials</h2>
+    <p>"StartSmart Elite changed the way I think about business. I tripled my monthly revenue in 3 months!" - Alex R.</p>
+    <p>"The tools and guidance are priceless. I finally feel in control of my startup." - Maya L.</p>
+  </div>
+</div>
+
+<!-- Slide-in Tips Panel -->
+<div id="tipPanel" class="tip-panel">
+<h3>Pro Tips</h3>
+<ul>
+<li>Focus on high-value customers first.</li>
+<li>Automate repetitive tasks to save time.</li>
+<li>Test different pricing strategies for max profit.</li>
+<li>Use analytics to track sales and growth trends.</li>
+<li>Stay consistent with content and outreach.</li>
+</ul>
+</div>
+
+<script>
+// Revenue calculation
+function revenueCalc(){
+    let p = document.getElementById("price").value;
+    let c = document.getElementById("customers").value;
+    let revenue = p*c;
+    document.getElementById("revenueOutput").innerText =
+    "Projected Monthly Revenue: $" + revenue;
+
+    // Update chart
+    if(window.revChart){
+        window.revChart.data.datasets[0].data = [revenue*0.25, revenue*0.5, revenue*0.75, revenue];
+        window.revChart.update();
+    }
+}
+
+// Revenue graph
+const ctx = document.getElementById('revenueChart').getContext('2d');
+window.revChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['25% Target', '50% Target', '75% Target', '100% Target'],
+        datasets: [{
+            label: 'Revenue Projection',
+            data: [0,0,0,0],
+            backgroundColor: '#00b4ff'
+        }]
+    },
+    options: {
+        scales: {
+            y: { beginAtZero: true }
+        },
+        responsive: true,
+        plugins: {
+            legend: { display: false }
+        }
+    }
+});
+
+// TV Easter egg
+function activateTV() {
+    const secret = document.getElementById("tvSecret");
+    const music = document.getElementById("tvMusic");
+
+    if (secret.style.display === "none") {
+        secret.style.display = "block";
+        music.play().catch(error => { alert("Click again to enable sound."); });
+        document.body.style.background = "linear-gradient(135deg, #000000, #001f3f, #00b4ff)";
+        document.body.style.animation = "glitch 0.2s infinite alternate";
+    } else {
+        secret.style.display = "none";
+        music.pause();
+        music.currentTime = 0;
+        document.body.style.background = "linear-gradient(135deg, #000814, #001d3d)";
+        document.body.style.animation = "none";
+    }
+}
+
+// Modals
+function showModal(id){ document.getElementById(id).style.display = "block"; }
+function closeModal(id){ document.getElementById(id).style.display = "none"; }
+window.onclick = function(event) {
+    let modals = document.getElementsByClassName('modal');
+    for (let i=0; i<modals.length; i++){
+        if (event.target == modals[i]) modals[i].style.display = "none";
+    }
+}
+
+// Slide-in tips
+function toggleTips(){
+    const panel = document.getElementById('tipPanel');
+    panel.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>
